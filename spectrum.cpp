@@ -1,4 +1,3 @@
-#include <iterator>
 #include "spectrum.h"
 
 vector<double> readFile(string motionDir)
@@ -27,13 +26,8 @@ vector<double> readFile(string motionDir)
     }
 }
 
-double h = 0.05;
-double dt = 0.02;
-
-vector<vector<double> > spectrum()
+vector<vector<double> > spectrum(vector<double> acceleration, double dt, double h)
 {
-    vector<double> acceleration = readFile("test.txt");
-
     for (int i = 0; i < acceleration.size(); i++)
     {
         double a0 = acceleration[i] * eq;
@@ -92,12 +86,19 @@ vector<vector<double> > spectrum()
     return returnParams;
 }
 
+double h = 0.05;
+double dt = 0.02;
+string filename = "test.txt";
+
 int main(int argc, char **argv)
 {
-    vector<vector<double> > result = spectrum();
+    vector<double> acceleration = readFile(filename);
+    vector<vector<double> > result = spectrum(acceleration, dt, h);
+
+    std::ofstream outFile("result.txt");
     for (int i = 0; i < result[0].size(); i++)
     {
-        printf("%f %f\n", result[0][i], result[1][i]);
+        outFile << to_string(result[0][i]) << " " <<  to_string(result[1][i]) << " " <<  to_string(result[2][i]) << " " <<  to_string(result[3][i]) << "\n";
     }
 
     return 0;

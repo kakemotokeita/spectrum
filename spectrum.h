@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include <stdio.h>
 #include <fstream>
 #include <iostream>
@@ -5,6 +6,7 @@
 #include <cmath>
 #include <vector>
 #include <functional>
+#include <iterator>
 
 using namespace std;
 
