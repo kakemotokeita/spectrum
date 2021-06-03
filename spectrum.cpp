@@ -1,32 +1,32 @@
 #include "spectrum.h"
 
-vector<double> readFile(string motionDir)
+vector<double> read_file(const string file_name)
 {
-    ifstream inputData;
-    inputData.open(motionDir);
+    ifstream input_file;
+    input_file.open(file_name);
 
     vector<double> data;
     double col1;
 
-    if (inputData.fail())
+    if (input_file.fail())
     {
         cerr << "Error in opening the input file" << endl;
         return data;
     }
     else
     {
-        while (!inputData.eof())
+        while (!input_file.eof())
         {
-            inputData >> col1;
+            input_file >> col1;
             data.push_back(col1);
         }
-        inputData.close();
+        input_file.close();
 
         return data;
     }
 }
 
-vector<vector<double> > spectrum(vector<double> acceleration, double dt, double h)
+vector<vector<double> > spectrum(const vector<double> acceleration, double dt, double h)
 {
     for (int i = 0; i < acceleration.size(); i++)
     {
@@ -35,14 +35,14 @@ vector<vector<double> > spectrum(vector<double> acceleration, double dt, double 
         f.push_back(-m * a0);
     }
 
-    for (int i = 1; i <= tTotal / dtTotal; i++)
+    for (int i = 1; i <= t_total / dt_total; i++)
     {
         acc1 = 0;
         vel1 = 0;
         dis1 = 0;
-        maxA = 0;
-        maxV = 0;
-        maxD = 0;
+        max_acc = 0;
+        max_vel = 0;
+        max_dis = 0;
         vector<double> acc;
         vector<double> vel;
         vector<double> dis;
@@ -67,38 +67,38 @@ vector<vector<double> > spectrum(vector<double> acceleration, double dt, double 
 
         for (int j = 0; j < acc.size(); j++)
         {
-            maxA = max(maxA, abs(acc[j]));
-            maxV = max(maxV, abs(vel[j]));
-            maxD = max(maxD, abs(dis[j]));
+            max_acc = max(max_acc, abs(acc[j]));
+            max_vel = max(max_vel, abs(vel[j]));
+            max_dis = max(max_dis, abs(dis[j]));
         }
 
         period.push_back(t);
-        accMax.push_back(maxA);
-        velMax.push_back(maxV);
-        disMax.push_back(maxD);
+        max_acc_vector.push_back(max_acc);
+        max_vel_vector.push_back(max_vel);
+        max_dis_vector.push_back(max_dis);
     }
 
-    vector<vector<double> > returnParams;
-    returnParams.push_back(period);
-    returnParams.push_back(accMax);
-    returnParams.push_back(velMax);
-    returnParams.push_back(disMax);
-    return returnParams;
+    vector<vector<double> > results;
+    results.push_back(period);
+    results.push_back(max_acc_vector);
+    results.push_back(max_vel_vector);
+    results.push_back(max_dis_vector);
+    return results;
 }
 
 double h = 0.05;
 double dt = 0.02;
-string filename = "test.txt";
+string file_name = "test.txt";
 
-int main(int argc, char **argv)
+int main()
 {
-    vector<double> acceleration = readFile(filename);
+    vector<double> acceleration = read_file(file_name);
     vector<vector<double> > result = spectrum(acceleration, dt, h);
 
-    std::ofstream outFile("result.txt");
+    std::ofstream output_file("result.txt");
     for (int i = 0; i < result[0].size(); i++)
     {
-        outFile << to_string(result[0][i]) << " " <<  to_string(result[1][i]) << " " <<  to_string(result[2][i]) << " " <<  to_string(result[3][i]) << "\n";
+        output_file << to_string(result[0][i]) << " " <<  to_string(result[1][i]) << " " <<  to_string(result[2][i]) << " " <<  to_string(result[3][i]) << "\n";
     }
 
     return 0;
